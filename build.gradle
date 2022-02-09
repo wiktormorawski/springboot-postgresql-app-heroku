@@ -6,7 +6,8 @@ plugins {
 
 group = 'pl.ug'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = "15"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 configurations {
 	compileOnly {
