@@ -55,7 +55,7 @@ public class AuthController {
         mailMessage.setTo(createdUser.getEmail());
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        String htmlMsg = "<div><h2>User registered</h2><h1>Name: %s</h1><h2>Date: %s</h2><h2>Login: %s</h2><h2>THANKS, it means a lot for us.</h2></div>".formatted(createdUser.getName() + createdUser.getSurname(), new Date(), createdUser.getUserName());
+        String htmlMsg = "<div><h2>User registered</h2><h1>Name: " + createdUser.getName() + " " + createdUser.getSurname() + "</h1><h2>Date: " + new Date() + "</h2><h2>Login: " + createdUser.getUserName() + "</h2><h2>THANKS, it means a lot for us.</h2></div>";
         helper.setText(htmlMsg, true);
         helper.setTo(createdUser.getEmail());
         helper.setSubject("You Successfully register in Wiktor's Blog " + createdUser.getName() + " " + createdUser.getSurname() + "  CONGRATS :)");

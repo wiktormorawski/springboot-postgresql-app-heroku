@@ -15,6 +15,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class importBeans {
@@ -79,7 +81,7 @@ public class importBeans {
                         bean.setAttributeNode(beanClass);
 
 
-                        List<String> commentParams = List.of("id","username", "id_post", "comment_content");
+                        List<String> commentParams = Arrays.asList("id","username", "id_post", "comment_content");
                         commentParams.forEach(parameter -> {
                             Element constructor = doc.createElement("constructor-arg");
                             bean.appendChild(constructor);
@@ -117,7 +119,7 @@ public class importBeans {
                         bean.setAttributeNode(beanClass);
 
 
-                        List<String> postParams = List.of("id","authors", "content", "tags");
+                        List<String> postParams = Arrays.asList("id","authors", "content", "tags");
                         postParams.forEach(parameter -> {
                             Element constructor = doc.createElement("constructor-arg");
                             bean.appendChild(constructor);

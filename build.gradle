@@ -41,4 +41,4 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
-targetCompatibility = JavaVersion.VERSION_15
+
