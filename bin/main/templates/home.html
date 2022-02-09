@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Wiktor's Blog</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .row.content {
+            height: 15000px;
+        }
+        h1{
+            color: #7200ff;
+        }
+        body{
+            background-color: #95ea6d;
+        }
+        /* Set gray background color and 100% height */
+        .sidenav {
+            background-color: cadetblue;
+            height: 100%;
+        }
+        /* Set black background color, white text and some padding */
+        footer {
+            background-color: #555;
+            color: white;
+            padding: 15px;
+        }
+        #cont{
+            height: fit-content;
+        }
+
+        /* On small screens, set height to 'auto' for sidenav and grid */
+        @media screen and (max-width: 767px) {
+            .sidenav {
+                height: auto;
+                padding: 15px;
+            }
+            .row.content {height: auto;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div th:text="${message}"/>
+    <div class="row content">
+        <div class="col-sm-3 sidenav">
+            <h1 class="content">Wiktor's Blog</h1>
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a class="list-group-item list-group-item-dark" href="/addPost">Add Post</a></li>
+                <li><a class="list-group-item list-group-item-dark" href="/searchCommentsByAuthors">Search comments of Author</a></li>
+            </ul><br>
+            <form method="GET" th:action="@{/}" th:object="${search}" style="width: 85%">
+            <div class="input-group" style="display: flex">
+                <input th:field="*{content}" type="text" class="form-control" placeholder="Search Blog..">
+                <select th:field="*{type}">
+                    <option th:value="'content'" th:text="Content" selected="selected"></option>
+                    <option th:value="'author'" th:text="Author"></option>
+                    <option th:value="'tag'" th:text="Tag"></option>
+                </select>
+            </div>
+            <div class="input-group" style="display: grid">
+                <select th:field="*{sortContentType}">
+                    <option th:value="'null'" th:text="'Sort by ...'" selected="selected"></option>
+                    <option th:value="'tag'" th:text="'Amount Of Tags'"></option>
+                    <option th:value="'author'" th:text="'Amount Of Authors'"></option>
+                    <option th:value="'content'" th:text="'Size Of content'"></option>
+                </select>
+                <select th:field="*{sortOption}">
+                    <option th:value="'DESC'" th:text="'From Highest to Lowest'" selected="selected"></option>
+                    <option th:value="'ASC'" th:text="'From Lowest to Highest'"></option>
+                </select>
+            </div>
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit" value="Submit" style="width: 100%;">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+            </form>
+        </div>
+        <h4 style="padding: 10px"><small>RECENT POSTS</small></h4>
+        <div th:each="element : ${postsWithComments}">
+            <div class="col-sm-9" id="cont" style="border-top: 1px solid black">
+                <hr>
+                <h5><span class="glyphicon glyphicon-time"></span> Post by <span th:each="author : ${element.getKey().getAuthors()}"><span th:text="${author} + ' '"/></span></h5>
+                <h5>Tags: <span th:each="tag : ${element.getKey().getTags()}"><span class="label label-success" th:text="${tag}"/></span></h5><br>
+                <p th:text="${element.getKey().getContent()}"/>
+                <hr>
+                <a th:href="@{/deletePost/{id}(id=${element.getKey().getId()})}"><button>Delete Post</button></a>
+                <a th:href="@{/editPost/{id}(id=${element.getKey().getId()})}"><button>Edit Post</button></a>
+                <h4>Leave a Comment:</h4>
+                <form method="POST" th:action="@{/addComment/{i}(i=${element.getKey().getId()})}" th:object="${commentToAdd}" role="form">
+                    <label for="username">Username:</label>
+                    <input id="username" type="text" th:field="*{username}"/>
+                    <span class="validationError"
+                          th:if="${#fields.hasErrors('username')}"
+                          th:errors="*{username}">Username Error
+                    </span>
+                    <br/>
+                    <div class="form-group">
+                        <textarea id="comment_content" th:field="*{comment_content}" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <span class="validationError"
+                          th:if="${#fields.hasErrors('comment_content')}"
+                          th:errors="*{comment_content}">Comment Error
+                    </span>
+                    <br/>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+                <br><br>
+
+                <p><span class="badge" th:text="${element.getValue().size()}"/> Comments:</p><br>
+                <div th:each="comment : ${element.getValue()}">
+                    <div class="row" style="display: flex">
+                        <div class="col-sm-10">
+                            <h4 th:text="${comment.getUsername()}"/>
+                            <p th:text="${comment.getComment_content()}"/>
+                            <br>
+                        </div>
+                        <a th:href="@{/deleteComment/{id}(id=${comment.getId()})}"><button>Delete comment</button></a>
+                        <a th:href="@{/editComment/{id}(id=${comment.getId()})}"><button>Edit comment</button></a>
+                    </div>
+                </div>
+
+
+            </div>
+            </div>
+    </div>
+</div>
+
+<footer class="container-fluid">
+    <p>© Copyright Wiktor Morawski</p>
+</footer>
+
+</body>
+</html>
